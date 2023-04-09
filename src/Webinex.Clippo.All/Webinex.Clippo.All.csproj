@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <Import Project="$(MSBuildThisFileDirectory)/Package.props" />
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <PackageId>Webinex.Clippo.All</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Webinex.Clippo.Abstractions\Webinex.Clippo.Abstractions.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo.Adapters.EfCore.AspNetCore\Webinex.Clippo.Adapters.EfCore.AspNetCore.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo.Adapters.EfCore\Webinex.Clippo.Adapters.EfCore.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo.AspNetCore.Controllers\Webinex.Clippo.AspNetCore.Controllers.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo\Webinex.Clippo.csproj" />
+    </ItemGroup>
+
+</Project>
