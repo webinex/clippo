@@ -16,6 +16,7 @@
         <ProjectReference Include="..\Webinex.Clippo.Adapters.EfCore.AspNetCore\Webinex.Clippo.Adapters.EfCore.AspNetCore.csproj" />
         <ProjectReference Include="..\Webinex.Clippo.Adapters.EfCore\Webinex.Clippo.Adapters.EfCore.csproj" />
         <ProjectReference Include="..\Webinex.Clippo.AspNetCore.Controllers\Webinex.Clippo.AspNetCore.Controllers.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo.AzureBlob\Webinex.Clippo.AzureBlob.csproj" />
         <ProjectReference Include="..\Webinex.Clippo\Webinex.Clippo.csproj" />
     </ItemGroup>
 

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Webinex.Clippo.Adapters.FileSystem
 {
-    internal class FileSystemBlobSettings
+    public class FileSystemBlobSettings
     {
         public FileSystemBlobSettings([NotNull] string basePath)
         {
