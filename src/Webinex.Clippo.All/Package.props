@@ -1,7 +1,7 @@
 ﻿<Project>
     <PropertyGroup>
         <Title>Webinex Clippo</Title>
-        <PackageVersion>0.0.2</PackageVersion>
+        <PackageVersion>0.1.0</PackageVersion>
         <Authors>Webinex Dev</Authors>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -9,9 +9,9 @@
         <Nullable>disable</Nullable>
         <Description>Easy to use attachments for dotnet core projects</Description>
         <Copyright>Webinex Dev</Copyright>
-        <PackageProjectUrl>https://github.com/webinex/starter-kit</PackageProjectUrl>
-        <License>https://github.com/webinex/starter-kit/LICENSE</License>
-        <RepositoryUrl>https://github.com/webinex/starter-kit</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/webinex/clippo</PackageProjectUrl>
+        <License>https://github.com/webinex/clippo/LICENSE</License>
+        <RepositoryUrl>https://github.com/webinex/clippo</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
     </PropertyGroup>
 </Project>

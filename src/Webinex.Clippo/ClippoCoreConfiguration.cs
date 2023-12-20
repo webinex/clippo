@@ -140,7 +140,8 @@ namespace Webinex.Clippo
         {
             basePath = basePath ?? throw new ArgumentNullException(nameof(basePath));
             var fsSettings = new FileSystemBlobSettings(basePath);
-            Services.AddSingleton(fsSettings);
+
+            Services.AddScoped(_ => fsSettings);
             Services.AddScoped<IClippoBlobStore, FileSystemBlobStore>();
 
             return this;
