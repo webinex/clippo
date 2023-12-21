@@ -3,8 +3,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <PackageId>Webinex.Clippo.AzureBlob</PackageId>
-    <RootNamespace>Webinex.Clippo.AzureBlob</RootNamespace>
+    <PackageId>Webinex.Clippo.Adapters.AzureBlob</PackageId>
+    <RootNamespace>Webinex.Clippo.Adapters.AzureBlob</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

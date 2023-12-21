@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.AspNetCore.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Tests", "Webinex.Clippo.Tests\Webinex.Clippo.Tests.csproj", "{6EF42AE1-E70F-4A10-851C-248E559A1FB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.AzureBlob", "Webinex.Clippo.AzureBlob\Webinex.Clippo.AzureBlob.csproj", "{C8ED1403-3D5E-482F-A9BC-396906CA27AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Adapters.AzureBlob", "Webinex.Clippo.Adapters.AzureBlob\Webinex.Clippo.Adapters.AzureBlob.csproj", "{C8ED1403-3D5E-482F-A9BC-396906CA27AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

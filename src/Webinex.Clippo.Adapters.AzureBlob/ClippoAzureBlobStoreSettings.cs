@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Webinex.Clippo.AzureBlob
+namespace Webinex.Clippo.Adapters.AzureBlob
 {
     public class ClippoAzureBlobStoreSettings
     {
