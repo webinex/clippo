@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Webinex.Clippo.Ports.Blob;
 
-namespace Webinex.Clippo.AzureBlob
+namespace Webinex.Clippo.Adapters.AzureBlob
 {
     public static class ClippoCoreConfigurationExtensions
     {

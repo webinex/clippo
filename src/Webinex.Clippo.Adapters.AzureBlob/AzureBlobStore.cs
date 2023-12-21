@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Webinex.Clippo.Ports.Blob;
 
-namespace Webinex.Clippo.AzureBlob
+namespace Webinex.Clippo.Adapters.AzureBlob
 {
     internal class AzureBlobStore : IClippoBlobStore
     {
