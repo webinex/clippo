@@ -16,7 +16,7 @@ namespace Webinex.Clippo.Adapters.EfCore
             
             var containsExp = (MethodCallExpression)_____ContainsExpression<TValue>().Body;
             var parameterExpression = valueAccessor.Parameters[0];
-            var constantValuesExpression = Expression.Constant(values);
+            var constantValuesExpression = Expression.Constant(values, typeof(IEnumerable<object>));
             var containsExpression = Expression.Call(null, containsExp.Method, constantValuesExpression, valueAccessor.Body);
             return Expression.Lambda<Func<TModel, bool>>(containsExpression, new[] { parameterExpression });
         }
