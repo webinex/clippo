@@ -50,5 +50,7 @@
     "react": ">=16",
     "react-dom": ">=16"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@webinex/clippo": "2.0.0-alpha1"
+  }
 }

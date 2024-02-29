@@ -3,7 +3,7 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
-        <PackageId>Webinex.Clippo.AspNetCore</PackageId>
+        <PackageId>Webinex.Clippo.AspNetCore.Controllers</PackageId>
         <RootNamespace>Webinex.Clippo.AspNetCore</RootNamespace>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
