@@ -1,53 +1,87 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Webinex.Coded;
 
-namespace Webinex.Clippo
+namespace Webinex.Clippo;
+
+public interface IClippo<TMeta, TData>
+    where TMeta : class, ICloneable
+    where TData : class, ICloneable
 {
-    /// <summary>
-    ///     Primary facade for interaction with Clippo.
-    ///     All calls to this service can be intercepted.
-    /// </summary>
-    /// <typeparam name="TClip">Clip type</typeparam>
-    public interface IClippo<TClip>
+    Task<IReadOnlyCollection<VFile<TMeta, TData>>> FilesByIdAsync(IEnumerable<string> ids);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> FoldersByIdAsync(IEnumerable<VFolderId> ids);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> QueryAsync(VFolderQuery query);
+    Task<IReadOnlyCollection<VFile<TMeta, TData>>> QueryAsync(VFileQuery query);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> PatchAsync(IEnumerable<VFolderPatch<TData>> patches);
+    Task<IReadOnlyCollection<VFile<TMeta, TData>>> PatchAsync(IEnumerable<VFilePatch<TData>> patches);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<VFolderState<TData>> states);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> UpdateAsync(IEnumerable<VFolderState<TData>> states);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> SaveAsync(IEnumerable<VFolderState<TData>> states);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> DeleteFoldersAsync(IEnumerable<VFolderId> ids);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> MoveAsync(IEnumerable<MoveVFolderArgs> args);
+}
+
+public static class ClippoExtensions
+{
+    public static async Task<VFolder<TMeta, TData>?> FolderByIdAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        string type,
+        string id)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
     {
-        /// <summary>
-        ///     Gets clips by identifiers
-        /// </summary>
-        /// <param name="ids">Clips identifiers</param>
-        /// <returns>Coded result containing found clips or error</returns>
-        Task<CodedResult<TClip[]>> ByIdAsync([NotNull] IEnumerable<string> ids);
-        
-        /// <summary>
-        ///     Gets all clips by search arguments
-        /// </summary>
-        /// <param name="args">Search arguments</param>
-        /// <returns>Coded result containing clips or error</returns>
-        Task<CodedResult<TClip[]>> GetAllAsync([NotNull] GetClipsArgs args);
-        
-        /// <summary>
-        ///     Stores files as clips and invokes <see cref="IClippoNewActionHandlers"/> for <see cref="StoreClipArgs.Actions"/>
-        /// </summary>
-        /// <param name="args">Files information to save</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        /// <returns>Coded result containing newly created clips or error</returns>
-        Task<CodedResult<TClip[]>> StoreAsync([NotNull] IEnumerable<StoreClipArgs> args, CancellationToken cancellationToken = default);
-        
-        /// <summary>
-        ///     Gets content of clips
-        /// </summary>
-        /// <param name="args">Clip search arguments</param>
-        /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
-        /// <returns>Coded result containing found clips content or error</returns>
-        Task<CodedResult<ClipContent[]>> ContentAsync([NotNull] GetContentArgs args, CancellationToken cancellationToken = default);
-        
-        /// <summary>
-        ///     Applies <paramref name="actions"/>
-        /// </summary>
-        /// <param name="actions">Actions to be applied</param>
-        /// <returns>Coded result containing success or error</returns>
-        Task<CodedResult> ApplyAsync([NotNull] IEnumerable<IClippoAction> actions);
+        var folderId = new VFolderId(id, type);
+        return await clippo.FolderByIdAsync(folderId);
+    }
+
+    public static async Task<VFolder<TMeta, TData>?> FolderByIdAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        VFolderId id)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.FoldersByIdAsync(new[] { id });
+        return result.FirstOrDefault();
+    }
+
+    public static async Task<VFolder<TMeta, TData>> SaveAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        VFolderState<TData> state)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.SaveAsync(new[] { state });
+        return result.First();
+    }
+
+    public static async Task<VFolder<TMeta, TData>> PatchAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        VFolderPatch<TData> state)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.PatchAsync(new[] { state });
+        return result.First();
+    }
+
+    public static async Task<VFolder<TMeta, TData>> AddAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        VFolderState<TData> state)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.AddAsync(new[] { state });
+        return result.First();
+    }
+
+    public static async Task<VFolder<TMeta, TData>> UpdateAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        VFolderState<TData> state)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.UpdateAsync(new[] { state });
+        return result.First();
     }
 }

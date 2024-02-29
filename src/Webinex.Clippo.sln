@@ -7,17 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo", "Webinex.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Abstractions", "Webinex.Clippo.Abstractions\Webinex.Clippo.Abstractions.csproj", "{0C8ECBCC-B24E-4D86-A52B-8ACE5699397D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Adapters.EfCore", "Webinex.Clippo.Adapters.EfCore\Webinex.Clippo.Adapters.EfCore.csproj", "{D402C640-0EF3-4C6C-8CAB-83B442E111F9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Adapters.EfCore.AspNetCore", "Webinex.Clippo.Adapters.EfCore.AspNetCore\Webinex.Clippo.Adapters.EfCore.AspNetCore.csproj", "{905CAAF6-27BC-4581-B6C1-923D64EE5D51}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.All", "Webinex.Clippo.All\Webinex.Clippo.All.csproj", "{FF9EAB23-907F-4F89-8BD4-2257CDEAFE40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.AspNetCore.Controllers", "Webinex.Clippo.AspNetCore.Controllers\Webinex.Clippo.AspNetCore.Controllers.csproj", "{86DA51BF-C463-4FC2-82C6-799548EA9CE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.AspNetCore", "Webinex.Clippo.AspNetCore\Webinex.Clippo.AspNetCore.csproj", "{86DA51BF-C463-4FC2-82C6-799548EA9CE3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Tests", "Webinex.Clippo.Tests\Webinex.Clippo.Tests.csproj", "{6EF42AE1-E70F-4A10-851C-248E559A1FB9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Webinex.Clippo.Adapters.AzureBlob", "Webinex.Clippo.Adapters.AzureBlob\Webinex.Clippo.Adapters.AzureBlob.csproj", "{C8ED1403-3D5E-482F-A9BC-396906CA27AC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,14 +30,6 @@ Global
 		{0C8ECBCC-B24E-4D86-A52B-8ACE5699397D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C8ECBCC-B24E-4D86-A52B-8ACE5699397D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C8ECBCC-B24E-4D86-A52B-8ACE5699397D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D402C640-0EF3-4C6C-8CAB-83B442E111F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D402C640-0EF3-4C6C-8CAB-83B442E111F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D402C640-0EF3-4C6C-8CAB-83B442E111F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D402C640-0EF3-4C6C-8CAB-83B442E111F9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{905CAAF6-27BC-4581-B6C1-923D64EE5D51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{905CAAF6-27BC-4581-B6C1-923D64EE5D51}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{905CAAF6-27BC-4581-B6C1-923D64EE5D51}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{905CAAF6-27BC-4581-B6C1-923D64EE5D51}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF9EAB23-907F-4F89-8BD4-2257CDEAFE40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF9EAB23-907F-4F89-8BD4-2257CDEAFE40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF9EAB23-907F-4F89-8BD4-2257CDEAFE40}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,9 +42,5 @@ Global
 		{6EF42AE1-E70F-4A10-851C-248E559A1FB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EF42AE1-E70F-4A10-851C-248E559A1FB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EF42AE1-E70F-4A10-851C-248E559A1FB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C8ED1403-3D5E-482F-A9BC-396906CA27AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C8ED1403-3D5E-482F-A9BC-396906CA27AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C8ED1403-3D5E-482F-A9BC-396906CA27AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C8ED1403-3D5E-482F-A9BC-396906CA27AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
