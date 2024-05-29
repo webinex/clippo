@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Webinex.Clippo.AspNetCore;
 
@@ -53,6 +54,13 @@ internal class ClippoAspNetCoreConfiguration<TMeta, TData> : IClippoAspNetCoreCo
         Schema = schema ?? throw new ArgumentNullException(nameof(schema));
         Policy = policy ?? throw new ArgumentNullException(nameof(policy));
         return this;
+    }
+
+    internal void Complete()
+    {
+        MvcBuilder.Services.TryAddScoped(
+            typeof(IClippoAspNetCoreMapper<,>).MakeGenericType(MetaType, DataType),
+            typeof(DefaultClippoAspNetCoreMapper<,>).MakeGenericType(MetaType, DataType));
     }
 
     public Type MetaType { get; } = typeof(TMeta);

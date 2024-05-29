@@ -1,7 +1,7 @@
 ﻿<Project>
     <PropertyGroup>
         <Title>Webinex Clippo</Title>
-        <PackageVersion>2.0.0-alpha1</PackageVersion>
+        <PackageVersion>2.1.0-build1</PackageVersion>
         <Authors>Webinex Dev</Authors>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

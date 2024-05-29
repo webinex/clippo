@@ -14,6 +14,7 @@ public static class ClippoMvcBuilderExtensions
         mvcBuilder = mvcBuilder ?? throw new ArgumentNullException(nameof(mvcBuilder));
         var configuration = ClippoAspNetCoreConfiguration<TMeta, TData>.GetOrCreate(mvcBuilder);
         configure?.Invoke(configuration);
+        configuration.Complete();
 
         return mvcBuilder;
     }
