@@ -19,30 +19,40 @@ internal class ClippoAspNetCoreService<TMeta, TData> : IClippoAspNetCoreService<
 {
     private readonly IClippo<TMeta, TData> _clippo;
     private readonly IClippoDbContext<TMeta, TData> _dbContext;
+    private readonly IClippoAspNetCoreMapper<TMeta, TData> _mapper;
 
-    public ClippoAspNetCoreService(IClippo<TMeta, TData> clippo, IClippoDbContext<TMeta, TData> dbContext)
+    public ClippoAspNetCoreService(
+        IClippo<TMeta, TData> clippo,
+        IClippoDbContext<TMeta, TData> dbContext,
+        IClippoAspNetCoreMapper<TMeta, TData> mapper)
     {
         _clippo = clippo;
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<IActionResult> ByIdAsync(VFolderId id)
     {
         var result = await _clippo.FolderByIdAsync(id);
-        return new OkObjectResult(result);
+        var dto = result != null
+            ? await _mapper.MapAsync(result)
+            : null;
+        return new OkObjectResult(dto);
     }
 
     public async Task<IActionResult> SaveAsync(VFolderState<TData> state)
     {
         var result = await _clippo.SaveAsync(state);
         await _dbContext.SaveChangesAsync();
-        return new OkObjectResult(result);
+        var dto = await _mapper.MapAsync(result);
+        return new OkObjectResult(dto);
     }
 
     public async Task<IActionResult> PatchAsync(VFolderPatch<TData> patch)
     {
         var result = await _clippo.PatchAsync(patch);
         await _dbContext.SaveChangesAsync();
-        return new OkObjectResult(result);
+        var dto = await _mapper.MapAsync(result);
+        return new OkObjectResult(dto);
     }
 }

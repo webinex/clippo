@@ -59,10 +59,12 @@ public class ClippoModelConfiguration<TMeta, TData>
                 if (_dataOwnNavigationBuilder != null)
                 {
                     row.OwnsOne(x => x.Data, x => _dataOwnNavigationBuilder(x));
+                    row.Navigation(x => x.Data).IsRequired();
                 }
                 else if (typeof(TData) != typeof(VNone))
                 {
                     row.OwnsOne(x => x.Data);
+                    row.Navigation(x => x.Data).IsRequired();
                 }
                 else
                 {
@@ -72,10 +74,12 @@ public class ClippoModelConfiguration<TMeta, TData>
                 if (_metaOwnNavigationBuilder != null)
                 {
                     row.OwnsOne(x => x.Meta, x => _metaOwnNavigationBuilder(x));
+                    row.Navigation(x => x.Meta).IsRequired();
                 }
                 else if (typeof(TMeta) != typeof(VNone))
                 {
                     row.OwnsOne(x => x.Meta);
+                    row.Navigation(x => x.Meta).IsRequired();
                 }
                 else
                 {
