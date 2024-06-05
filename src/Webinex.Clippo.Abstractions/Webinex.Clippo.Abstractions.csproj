@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Webinex.Asky" Version="1.3.0-beta5" />
+      <PackageReference Include="Webinex.Asky" Version="1.3.1" />
       <PackageReference Include="Webinex.Coded" Version="1.0.0" />
     </ItemGroup>
 
