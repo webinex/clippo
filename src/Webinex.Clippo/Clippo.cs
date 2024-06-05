@@ -31,13 +31,16 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
 
     public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> QueryAsync(VFolderQuery query)
     {
-        var rows = await RowsQueryable(query).AsNoTracking().ToArrayAsync();
+        var rows = await RowsQueryable(query, track: false).AsNoTracking().ToArrayAsync();
         return Map(rows);
     }
 
-    private IQueryable<VRow<TMeta, TData>> RowsQueryable(VFolderQuery query)
+    private IQueryable<VRow<TMeta, TData>> RowsQueryable(VFolderQuery query, bool track)
     {
-        var queryable = _dbContext.Set<VRow<TMeta, TData>>().AsQueryable().AsNoTracking();
+        var queryable = _dbContext.Set<VRow<TMeta, TData>>().AsQueryable();
+
+        if (!track)
+            queryable = queryable.AsNoTracking();
 
         if (query.FilterRule != null)
             queryable = queryable.Where(_vFolderVRowFieldMap, query.FilterRule);
@@ -51,7 +54,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return queryable;
     }
 
-    private IQueryable<VRow<TMeta, TData>> RowsQueryableById(IEnumerable<VFolderId> ids)
+    private IQueryable<VRow<TMeta, TData>> RowsQueryableById(IEnumerable<VFolderId> ids, bool track)
     {
         ids = ids.ToArray();
 
@@ -64,7 +67,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
             ? FilterRule.Or(byIdFilters)
             : byIdFilters.Single();
 
-        return RowsQueryable(new VFolderQuery(filterRule: filterRule));
+        return RowsQueryable(new VFolderQuery(filterRule: filterRule), track);
     }
 
     private VFolder<TMeta, TData>[] Map(VRow<TMeta, TData>[] rows)
@@ -135,7 +138,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         ids = ids.Distinct().ToArray();
         if (!ids.Any()) return Array.Empty<VFolder<TMeta, TData>>();
 
-        var result = await RowsQueryableById(ids).AsNoTracking().ToArrayAsync();
+        var result = await RowsQueryableById(ids, track: false).AsNoTracking().ToArrayAsync();
         return Map(result);
     }
 
@@ -169,7 +172,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
     {
         states = states.ToArray();
         var ids = states.Select(x => new VFolderId(x.Type, x.Id)).Distinct().ToArray();
-        var rows = await RowsQueryableById(ids).ToArrayAsync();
+        var rows = await RowsQueryableById(ids, track: true).ToArrayAsync();
         var meta = await _metaProvider.GetAsync();
         return await UpdateAsync(states, rows, meta);
     }
@@ -197,7 +200,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
     {
         states = states.ToArray();
         var ids = states.Select(x => new VFolderId(x.Type, x.Id)).Distinct().ToArray();
-        var rows = await RowsQueryableById(ids).ToArrayAsync();
+        var rows = await RowsQueryableById(ids, track: true).ToArrayAsync();
         var vFolderIdInRows = rows.Select(x => x.Folder.Clone()).Distinct().ToArray();
         var meta = await _metaProvider.GetAsync();
         
@@ -238,7 +241,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
 
     public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> DeleteFoldersAsync(IEnumerable<VFolderId> ids)
     {
-        var rows = await RowsQueryableById(ids).ToArrayAsync();
+        var rows = await RowsQueryableById(ids, track: true).ToArrayAsync();
         _dbContext.Set<VRow<TMeta, TData>>().RemoveRange(rows);
         return Map(rows);
     }
@@ -247,7 +250,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
     {
         args = args.Distinct().ToArray();
         var ids = args.Select(x => x.FromId).ToArray();
-        var rows = await RowsQueryableById(ids).ToArrayAsync();
+        var rows = await RowsQueryableById(ids, track: true).ToArrayAsync();
 
         foreach (var group in rows.GroupBy(x => x.Folder.Clone()))
         {
