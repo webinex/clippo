@@ -30,6 +30,7 @@ internal class ClippoAspNetCoreConfiguration<TMeta, TData> : IClippoAspNetCoreCo
 
         MvcBuilder.Services.AddSingleton<IClippoAspNetCoreSettings>(this);
         MvcBuilder.Services.AddScoped<IClippoAspNetCoreService<TMeta, TData>, ClippoAspNetCoreService<TMeta, TData>>();
+        MvcBuilder.Services.AddClippoInteractor();
         MvcBuilder.AddController(typeof(ClippoController<TMeta, TData>));
     }
 

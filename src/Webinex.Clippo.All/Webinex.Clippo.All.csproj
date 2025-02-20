@@ -14,6 +14,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Webinex.Clippo.Abstractions\Webinex.Clippo.Abstractions.csproj" />
         <ProjectReference Include="..\Webinex.Clippo.AspNetCore.Controllers\Webinex.Clippo.AspNetCore.Controllers.csproj" />
+        <ProjectReference Include="..\Webinex.Clippo.Interactions\Webinex.Clippo.Interactions.csproj" />
         <ProjectReference Include="..\Webinex.Clippo\Webinex.Clippo.csproj" />
     </ItemGroup>
 
