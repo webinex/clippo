@@ -2,7 +2,7 @@
 
 namespace Webinex.Clippo;
 
-internal class VRow<TMeta, TData>
+public class VRow<TMeta, TData>
     where TMeta : class, ICloneable
     where TData : class, ICloneable
 {
