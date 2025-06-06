@@ -67,7 +67,7 @@ public class VFileDeletePatch
     }
 }
 
-public class VFileAddPatch<TData>
+public class VFileAddPatch<TData> : IVFileValue<TData>
     where TData : class, ICloneable
 {
     public string Name { get; }
@@ -77,7 +77,6 @@ public class VFileAddPatch<TData>
     public TData Data { get; }
 
     public VFileAddPatch(
-        string? id,
         string name,
         string mimeType,
         int bytes,
