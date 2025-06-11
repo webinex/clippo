@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 
 namespace Webinex.Clippo;
 
-internal static class VFileStateExtensions
+internal static class VFileValueExtensions
 {
     public static VRow<TMeta, TData> ToRow<TMeta, TData>(
-        this VFileState<TData> state,
+        this IVFileValue<TData> fileValue,
         VFolderId vFolderId,
         TMeta meta)
         where TMeta : class, ICloneable
@@ -13,11 +13,11 @@ internal static class VFileStateExtensions
     {
         return VRow<TMeta, TData>.NewFile(
             vFolderId,
-            state.Name,
-            state.MimeType,
-            state.Bytes,
-            state.Ref,
+            fileValue.Name,
+            fileValue.MimeType,
+            fileValue.Bytes,
+            fileValue.Ref,
             meta,
-            state.Data);
+            fileValue.Data);
     }
 }

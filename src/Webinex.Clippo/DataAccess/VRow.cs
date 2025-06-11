@@ -1,4 +1,5 @@
 ﻿using System;
+using Webinex.Coded;
 
 namespace Webinex.Clippo;
 
@@ -77,6 +78,14 @@ internal class VRow<TMeta, TData>
         };
     }
 
+    public void ValidateVersion(string version)
+    {
+        if (Version != version)
+        {
+            throw CodedException.Conflict();
+        }
+    }
+
     public void UpdateFile(string name, int bytes, string @ref, string mimeType, TData data)
     {
         Name = name;
@@ -84,6 +93,36 @@ internal class VRow<TMeta, TData>
         Ref = @ref;
         MimeType = mimeType;
         Data = (TData)data.Clone();
+        Version = Guid.NewGuid().ToString();
+    }
+
+    public void ApplyPatch(VFileSetPatch<TData> patch)
+    {
+        if (patch.Name?.HasValue == true)
+        {
+            Name = patch.Name.Value;
+        }
+
+        if (patch.Bytes?.HasValue == true)
+        {
+            Bytes = patch.Bytes.Value;
+        }
+
+        if (patch.Ref?.HasValue == true)
+        {
+            Ref = patch.Ref.Value;
+        }
+
+        if (patch.MimeType?.HasValue == true)
+        {
+            MimeType = patch.MimeType.Value;
+        }
+
+        if (patch.Data?.HasValue == true)
+        {
+            Data = (TData)patch.Data.Value.Clone();
+        }
+
         Version = Guid.NewGuid().ToString();
     }
 
