@@ -142,9 +142,88 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return Map(result);
     }
 
-    public Task<IReadOnlyCollection<VFolder<TMeta, TData>>> PatchAsync(IEnumerable<VFolderPatch<TData>> patches)
+    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> PatchAsync(IEnumerable<VFolderPatch<TData>> patches)
     {
-        throw new NotImplementedException();
+        patches = patches.ToArray();
+        var ids = patches.Select(x => x.Id).Distinct().ToArray();
+
+        var rows = await RowsQueryableById(ids, track: true).ToArrayAsync();
+        var meta = await _metaProvider.GetAsync();
+
+        return await PatchFoldersAsync(patches, rows, meta).ToListAsync();
+    }
+
+    private async IAsyncEnumerable<VFolder<TMeta, TData>> PatchFoldersAsync(
+        IEnumerable<VFolderPatch<TData>> patches,
+        VRow<TMeta, TData>[] rows,
+        TMeta meta)
+    {
+        foreach (var patch in patches)
+        {
+            var folderRows = rows.Where(x => x.Folder == patch.Id).ToArray();
+            if (!folderRows.Any())
+            {
+                throw CodedException.NotFound();
+            }
+
+            yield return await PatchFolderAsync(folderRows, patch, meta);
+        }
+    }
+
+    private async Task<VFolder<TMeta, TData>> PatchFolderAsync(VRow<TMeta, TData>[] rows, VFolderPatch<TData> patch, TMeta meta)
+    {
+        var folderRow = rows.First(r => r.Type == VRowType.Folder);
+
+        if (patch.Version?.HasValue == true)
+            folderRow.ValidateVersion(patch.Version.Value);
+
+        if (patch.Files == null)
+        {
+            return MapFolder(rows);
+        }
+
+        return await PatchFilesAsync(rows, patch, meta);
+    }
+
+    private async Task<VFolder<TMeta, TData>> PatchFilesAsync(VRow<TMeta, TData>[] rows, VFolderPatch<TData> patch, TMeta meta)
+    {
+        var folderRow = rows.First(r => r.Type == VRowType.Folder);
+        var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
+
+        var newFileRows = await AddNewFilesAsync(patch, folderRow.Folder, meta);
+        var deletedFileRows = DeleteFiles(fileRows, patch);
+        PatchFiles(fileRows, patch);
+
+        var notDeletedRow = fileRows.Except(deletedFileRows);
+
+        var result = new[] { folderRow }.Concat(newFileRows).Concat(notDeletedRow).ToArray();
+        return MapFolder(result);
+    }
+
+    private async Task<VRow<TMeta, TData>[]> AddNewFilesAsync(VFolderPatch<TData> patch, VFolderId folderId, TMeta meta)
+    {
+        var newFiles = patch.Files!.Where(x => x.Add != null).Select(x => x.Add!).ToArray();
+        var newFileRows = newFiles.Select(x => x.ToRow(folderId, meta)).ToArray();
+        await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(newFileRows);
+
+        return newFileRows;
+    }
+
+    private VRow<TMeta, TData>[] DeleteFiles(VRow<TMeta, TData>[] fileRows, VFolderPatch<TData> patch)
+    {
+        var deleteFileRows = fileRows.Where(x => patch.Files!.Any(pf => pf.Delete?.Id == x.Id)).ToArray();
+        _dbContext.Set<VRow<TMeta, TData>>().RemoveRange(deleteFileRows);
+
+        return deleteFileRows;
+    }
+
+    private static void PatchFiles(VRow<TMeta, TData>[] fileRows, VFolderPatch<TData> patch)
+    {
+        var updatedFileRows = fileRows.Join(patch.Files!, row => row.Id, p => p.Set?.Id, (row, filePatch) => new { ExistingRow = row, Patch = filePatch.Set! });
+        foreach (var updateFileRow in updatedFileRows)
+        {
+            updateFileRow.ExistingRow.ApplyPatch(updateFileRow.Patch);
+        }
     }
 
     public Task<IReadOnlyCollection<VFile<TMeta, TData>>> PatchAsync(IEnumerable<VFilePatch<TData>> patches)
@@ -217,8 +296,8 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         var folderRow = rows.First(r => r.Type == VRowType.Folder);
         var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
 
-        if (state.Version?.HasValue == true && folderRow.Version != state.Version.Value)
-            throw CodedException.Conflict();
+        if (state.Version?.HasValue == true)
+            folderRow.ValidateVersion(state.Version.Value);
 
         var newFiles = state.Files.Where(x => x.Id == null).ToArray();
         var newFileRows = newFiles.Select(x => x.ToRow(folderRow.Folder, meta)).ToArray();

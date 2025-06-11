@@ -2,7 +2,7 @@
 
 namespace Webinex.Clippo;
 
-public class VFileState<TData>
+public class VFileState<TData> : IVFileValue<TData>
     where TData : class, ICloneable
 {
     public string? Id { get; }
