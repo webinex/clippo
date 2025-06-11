@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Webinex.Asky;
+using Webinex.Coded;
 
 namespace Webinex.Clippo;
 
@@ -157,21 +158,21 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         VRow<TMeta, TData>[] rows,
         TMeta meta)
     {
-        patches = patches.ToArray();
-
-        var byFolderId = rows.GroupBy(x => x.Folder.Clone());
-
-        foreach (var group in byFolderId)
+        foreach (var patch in patches)
         {
-            var folderPatch = patches.First(x => x.Id == group.Key);
-            yield return await PatchFolderAsync(group.ToArray(), folderPatch, meta);
+            var folderRows = rows.Where(x => x.Folder == patch.Id).ToArray();
+            if (!folderRows.Any())
+            {
+                throw CodedException.NotFound();
+            }
+
+            yield return await PatchFolderAsync(folderRows, patch, meta);
         }
     }
 
     private async Task<VFolder<TMeta, TData>> PatchFolderAsync(VRow<TMeta, TData>[] rows, VFolderPatch<TData> patch, TMeta meta)
     {
         var folderRow = rows.First(r => r.Type == VRowType.Folder);
-        var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
 
         if (patch.Version?.HasValue == true)
             folderRow.ValidateVersion(patch.Version.Value);
@@ -181,9 +182,17 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
             return MapFolder(rows);
         }
 
+        return await PatchFilesAsync(rows, patch, meta);
+    }
+
+    private async Task<VFolder<TMeta, TData>> PatchFilesAsync(VRow<TMeta, TData>[] rows, VFolderPatch<TData> patch, TMeta meta)
+    {
+        var folderRow = rows.First(r => r.Type == VRowType.Folder);
+        var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
+
         var newFileRows = await AddNewFilesAsync(patch, folderRow.Folder, meta);
         var deletedFileRows = DeleteFiles(fileRows, patch);
-        UpdateFiles(fileRows, patch);
+        PatchFiles(fileRows, patch);
 
         var notDeletedRow = fileRows.Except(deletedFileRows);
 
@@ -208,7 +217,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return deleteFileRows;
     }
 
-    private static void UpdateFiles(VRow<TMeta, TData>[] fileRows, VFolderPatch<TData> patch)
+    private static void PatchFiles(VRow<TMeta, TData>[] fileRows, VFolderPatch<TData> patch)
     {
         var updatedFileRows = fileRows.Join(patch.Files!, row => row.Id, p => p.Set?.Id, (row, filePatch) => new { ExistingRow = row, Patch = filePatch.Set! });
         foreach (var updateFileRow in updatedFileRows)
