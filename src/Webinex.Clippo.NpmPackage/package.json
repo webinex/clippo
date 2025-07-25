@@ -2,7 +2,7 @@
   "name": "@webinex/clippo",
   "description": "Webinex Clippo",
   "private": false,
-  "version": "2.0.0-alpha1",
+  "version": "2.0.0-alpha2",
   "author": "Webinex, Dev",
   "license": "Apache-2.0",
   "main": "dist/cjs/index.js",
@@ -49,8 +49,5 @@
     "axios": ">=0.24",
     "react": ">=16",
     "react-dom": ">=16"
-  },
-  "dependencies": {
-    "@webinex/clippo": "2.0.0-alpha1"
   }
 }

@@ -83,7 +83,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
         var files = fileRows.Select(MapFile).ToArray();
 
-        return new VFolder<TMeta, TData>(folderRow.Folder.Type, folderRow.Folder.Id, folderRow.Version, files);
+        return new VFolder<TMeta, TData>(folderRow.Folder.Type, folderRow.Folder.Id, folderRow.Version, folderRow.Path, files);
     }
 
     private VFile<TMeta, TData> MapFile(VRow<TMeta, TData> x)
@@ -132,13 +132,12 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return rows.Select(MapFile).ToArray();
     }
 
-    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> FoldersByIdAsync(
-        IEnumerable<VFolderId> ids)
+    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> FoldersByIdAsync(IEnumerable<VFolderId> ids)
     {
         ids = ids.Distinct().ToArray();
         if (!ids.Any()) return Array.Empty<VFolder<TMeta, TData>>();
 
-        var result = await RowsQueryableById(ids, track: false).AsNoTracking().ToArrayAsync();
+        var result = await RowsQueryableById(ids, track: false).ToArrayAsync();
         return Map(result);
     }
 
@@ -190,7 +189,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         var folderRow = rows.First(r => r.Type == VRowType.Folder);
         var fileRows = rows.Where(r => r.Type == VRowType.File).ToArray();
 
-        var newFileRows = await AddNewFilesAsync(patch, folderRow.Folder, meta);
+        var newFileRows = await AddNewFilesAsync(patch, folderRow.Folder, folderRow.Path, meta);
         var deletedFileRows = DeleteFiles(fileRows, patch);
         PatchFiles(fileRows, patch);
 
@@ -200,10 +199,10 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return MapFolder(result);
     }
 
-    private async Task<VRow<TMeta, TData>[]> AddNewFilesAsync(VFolderPatch<TData> patch, VFolderId folderId, TMeta meta)
+    private async Task<VRow<TMeta, TData>[]> AddNewFilesAsync(VFolderPatch<TData> patch, VFolderId folderId, string? folderPath, TMeta meta)
     {
         var newFiles = patch.Files!.Where(x => x.Add != null).Select(x => x.Add!).ToArray();
-        var newFileRows = newFiles.Select(x => x.ToRow(folderId, meta)).ToArray();
+        var newFileRows = newFiles.Select(x => x.ToRow(folderId, folderPath, meta)).ToArray();
         await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(newFileRows);
 
         return newFileRows;
@@ -299,8 +298,13 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         if (state.Version?.HasValue == true)
             folderRow.ValidateVersion(state.Version.Value);
 
+        if (state.Path?.HasValue == true)
+        {
+            folderRow.UpdatePath(state.Path.Value);
+        }
+
         var newFiles = state.Files.Where(x => x.Id == null).ToArray();
-        var newFileRows = newFiles.Select(x => x.ToRow(folderRow.Folder, meta)).ToArray();
+        var newFileRows = newFiles.Select(x => x.ToRow(folderRow.Folder, folderRow.Path, meta)).ToArray();
         await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(newFileRows);
 
         var deleteFileRows = fileRows.Where(x => state.Files.All(sf => sf.Id != x.Id)).ToArray();
@@ -312,6 +316,11 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         {
             var fState = state.Files.First(x => x.Id == updateFileRow.Id);
             updateFileRow.UpdateFile(fState.Name, fState.Bytes, fState.Ref, fState.MimeType, fState.Data);
+
+            if (state.Path?.HasValue == true)
+            {
+                updateFileRow.UpdatePath(state.Path.Value);
+            }
         }
 
         var result = new[] { folderRow }.Concat(newFileRows).Concat(updateFileRows).ToArray();

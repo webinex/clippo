@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -24,16 +23,25 @@ public class ClippoController<TMeta, TData> : ControllerBase
         _clippoAspNetCore = clippoAspNetCore;
     }
 
-    [HttpGet("{type}/{id}")]
-    public async Task<IActionResult> ByIdAsync([Required] string type, [Required] string id)
+    [HttpGet]
+    public async Task<IActionResult> GetAllAsync([FromQuery] string? type, [FromQuery] string? id, [FromQuery] string? path)
     {
-        if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(type))
+        var isTypeSpecified = !string.IsNullOrWhiteSpace(type);
+        var isIdSpecified = !string.IsNullOrWhiteSpace(id);
+        if (isTypeSpecified != isIdSpecified)
             return BadRequest();
 
         if (!await AuthorizeAsync())
             return Forbid();
 
-        return await _clippoAspNetCore.ByIdAsync(new VFolderId(type, id));
+        VFolderId? folderId = null;
+
+        if (isTypeSpecified && isIdSpecified)
+        {
+            folderId = new VFolderId(type!, id!);
+        }
+
+        return await _clippoAspNetCore.GetAllAsync(folderId, path);
     }
 
     [HttpPatch]
@@ -44,7 +52,7 @@ public class ClippoController<TMeta, TData> : ControllerBase
 
         return await _clippoAspNetCore.PatchAsync(patch);
     }
-    
+
     [HttpPut]
     public async Task<IActionResult> SaveAsync([FromBody] VFolderState<TData> state)
     {

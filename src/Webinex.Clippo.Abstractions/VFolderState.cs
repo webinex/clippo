@@ -9,16 +9,18 @@ public class VFolderState<TData>
     public string Id { get; protected set; }
     public string Type { get; protected set; }
     public Optional<string>? Version { get; protected set; }
+    public Optional<string>? Path { get; protected set; }
     public IEnumerable<VFileState<TData>> Files { get; protected set; }
 
     public VFolderId VFolderId() => new(Type, Id);
 
-    public VFolderState(string id, string type, Optional<string>? version, IEnumerable<VFileState<TData>> files)
+    public VFolderState(string id, string type, Optional<string>? version, Optional<string>? path, IEnumerable<VFileState<TData>> files)
     {
         Id = id;
         Type = type;
         Files = files;
         Version = version;
+        Path = path;
     }
 
     protected VFolderState(VFolderState<TData> value)
@@ -27,6 +29,7 @@ public class VFolderState<TData>
         Type = value.Type;
         Files = value.Files;
         Version = value.Version;
+        Path = value.Path;
     }
 
     public VFolderState<TData> WithId(VFolderId id)

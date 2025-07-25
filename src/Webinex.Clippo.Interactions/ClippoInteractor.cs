@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Webinex.Clippo;
@@ -14,9 +15,9 @@ public class ClippoInteractor<TMeta, TData> : IClippoInteractor<TMeta, TData> wh
         _dbContext = dbContext;
     }
 
-    public async Task<VFolder<TMeta, TData>?> ByIdAsync(VFolderId id)
+    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> GetAllAsync(VFolderQuery query)
     {
-        return await _clippo.FolderByIdAsync(id);
+        return await _clippo.QueryAsync(query);
     }
 
     public async Task<VFolder<TMeta, TData>> SaveAsync(VFolderState<TData> state)
