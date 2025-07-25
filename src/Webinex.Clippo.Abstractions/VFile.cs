@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Webinex.Clippo;
 
@@ -9,6 +8,7 @@ public class VFile<TMeta, TData>
 {
     public string Id { get; }
     public VFolderId Folder { get; }
+    public string? Path { get; }
     public string Name { get; }
     public int Bytes { get; }
     public string Ref { get; }
@@ -19,6 +19,7 @@ public class VFile<TMeta, TData>
     public VFile(
         string id,
         VFolderId folder,
+        string? path,
         string name,
         string mimeType,
         int bytes,
@@ -27,6 +28,7 @@ public class VFile<TMeta, TData>
         TData data)
     {
         Id = id;
+        Path = path;
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Bytes = bytes;
         Ref = @ref ?? throw new ArgumentNullException(nameof(@ref));

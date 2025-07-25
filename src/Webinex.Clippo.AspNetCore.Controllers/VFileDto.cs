@@ -6,6 +6,7 @@ public class VFileDto
 {
     public string Id { get; }
     public VFolderId Folder { get; }
+    public string? Path { get; }
     public string Name { get; }
     public int Bytes { get; }
     public string Ref { get; }
@@ -16,6 +17,7 @@ public class VFileDto
     public VFileDto(
         string id,
         VFolderId folder,
+        string? path,
         string name,
         string mimeType,
         int bytes,
@@ -24,6 +26,7 @@ public class VFileDto
         object data)
     {
         Id = id;
+        Path = path;
         Name = name ?? throw new ArgumentNullException(nameof(name));
         Bytes = bytes;
         Ref = @ref ?? throw new ArgumentNullException(nameof(@ref));
@@ -40,6 +43,7 @@ public class VFileDto
         return new VFileDto(
             file.Id,
             file.Folder,
+            file.Path,
             file.Name,
             file.MimeType,
             file.Bytes,

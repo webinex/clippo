@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Webinex.Asky;
 
 namespace Webinex.Clippo;
 
@@ -17,6 +19,12 @@ public class ClippoInteractor<TMeta, TData> : IClippoInteractor<TMeta, TData> wh
     public async Task<VFolder<TMeta, TData>?> ByIdAsync(VFolderId id)
     {
         return await _clippo.FolderByIdAsync(id);
+    }
+
+    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> ByPathAsync(string path)
+    {
+        var filterRule = FilterRule.StartsWith("path", path);
+        return await _clippo.QueryAsync(new VFolderQuery(filterRule));
     }
 
     public async Task<VFolder<TMeta, TData>> SaveAsync(VFolderState<TData> state)

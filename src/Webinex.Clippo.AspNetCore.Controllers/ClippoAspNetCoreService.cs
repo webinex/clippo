@@ -9,6 +9,7 @@ public interface IClippoAspNetCoreService<TMeta, TData>
     where TData : class, ICloneable
 {
     Task<IActionResult> ByIdAsync(VFolderId id);
+    Task<IActionResult> ByPathAsync(string path);
     Task<IActionResult> SaveAsync(VFolderState<TData> state);
     Task<IActionResult> PatchAsync(VFolderPatch<TData> patch);
 }
@@ -34,6 +35,13 @@ internal class ClippoAspNetCoreService<TMeta, TData> : IClippoAspNetCoreService<
         var dto = result != null
             ? await _mapper.MapAsync(result)
             : null;
+        return new OkObjectResult(dto);
+    }
+
+    public async Task<IActionResult> ByPathAsync(string path)
+    {
+        var result = await _interactor.ByPathAsync(path);
+        var dto = await _mapper.MapAsync(result);
         return new OkObjectResult(dto);
     }
 

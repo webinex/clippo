@@ -9,13 +9,15 @@ public class VFolderDto
     public string Id { get; }
     public string Type { get; }
     public string Version { get; }
+    public string? Path { get; }
     public IReadOnlyCollection<VFileDto> Files { get; }
 
-    public VFolderDto(string type, string id, string version, IReadOnlyCollection<VFileDto> files)
+    public VFolderDto(string type, string id, string version, string? path, IReadOnlyCollection<VFileDto> files)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
         Type = type ?? throw new ArgumentNullException(nameof(type));
         Version = version ?? throw new ArgumentNullException(nameof(version));
+        Path = path;
         Files = files ?? throw new ArgumentNullException(nameof(files));
     }
 
@@ -23,6 +25,6 @@ public class VFolderDto
         where TMeta : class, ICloneable
         where TData : class, ICloneable
     {
-        return new VFolderDto(folder.Type, folder.Id, folder.Version, folder.Files.Select(VFileDto.FromFile).ToArray());
+        return new VFolderDto(folder.Type, folder.Id, folder.Version, folder.Path, folder.Files.Select(VFileDto.FromFile).ToArray());
     }
 }

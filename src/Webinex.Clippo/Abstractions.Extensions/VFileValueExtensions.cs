@@ -13,6 +13,7 @@ internal static class VFileValueExtensions
     {
         return VRow<TMeta, TData>.NewFile(
             vFolderId,
+            fileValue.Path,
             fileValue.Name,
             fileValue.MimeType,
             fileValue.Bytes,

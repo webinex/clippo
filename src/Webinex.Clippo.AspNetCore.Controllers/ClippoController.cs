@@ -24,6 +24,18 @@ public class ClippoController<TMeta, TData> : ControllerBase
         _clippoAspNetCore = clippoAspNetCore;
     }
 
+    [HttpGet("path/{*path}")]
+    public async Task<IActionResult> ByPathAsync([Required] string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return BadRequest();
+
+        if (!await AuthorizeAsync())
+            return Forbid();
+
+        return await _clippoAspNetCore.ByPathAsync(path);
+    }
+
     [HttpGet("{type}/{id}")]
     public async Task<IActionResult> ByIdAsync([Required] string type, [Required] string id)
     {

@@ -7,6 +7,7 @@ export interface VFolderId {
 
 export interface VFile<TMeta, TData> {
   id: string;
+  path: string | null
   folder: VFolderId;
   name: string;
   bytes: number;
@@ -20,6 +21,7 @@ export interface VFolder<TMeta, TData> {
   id: string;
   type: string;
   version: string;
+  path: string | null
   files: VFile<TMeta, TData>[];
 }
 
@@ -29,6 +31,7 @@ export interface Optional<TValue> {
 }
 
 export interface VFileAddPatch<TData> {
+  path?: string | null
   name: string;
   mimeType: string;
   bytes: number;
@@ -42,6 +45,7 @@ export interface VFileDeletePatch {
 
 export interface VFileSetPatch<TData> {
   id: string;
+  path?: Optional<string> | null;
   name?: Optional<string> | null;
   mimeType?: Optional<string> | null;
   bytes?: Optional<number> | null;
@@ -58,11 +62,13 @@ export interface VFilePatch<TData> {
 export interface VFolderPatch<TData> {
   id: VFolderId;
   version?: Optional<string> | null;
+  path?: Optional<string> | null;
   files?: VFilePatch<TData>[] | null;
 }
 
 export interface VFileState<TData> {
   id?: string | null;
+  path?: string | null;
   name: string;
   bytes: number;
   ref: string;
@@ -73,6 +79,7 @@ export interface VFileState<TData> {
 export interface VFolderState<TData> {
   id: string;
   type: string;
+  path?: Optional<string> | null;
   version?: Optional<string> | null;
   files: VFileState<TData>[];
 }
@@ -93,6 +100,13 @@ export class ClippoHttp<TMeta, TData> {
     const { data } = await this._axios.get<VFolder<TMeta, TData>>(url);
     return data;
   };
+
+  public byPath = async (path: string): Promise<VFolder<TMeta, TData>[]> => {
+    const urlPath = encodeURI(path);
+    const url = `/path/${urlPath}`;
+    const { data } = await this._axios.get<VFolder<TMeta, TData>[]>(url);
+    return data;
+  }
 
   public patch = async (patch: VFolderPatch<TData>): Promise<VFolder<TMeta, TData>> => {
     const { data } = await this._axios.patch<VFolder<TMeta, TData>>('/', patch);

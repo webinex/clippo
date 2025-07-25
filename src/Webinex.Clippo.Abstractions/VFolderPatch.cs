@@ -70,6 +70,7 @@ public class VFileDeletePatch
 public class VFileAddPatch<TData> : IVFileValue<TData>
     where TData : class, ICloneable
 {
+    public string? Path { get; }
     public string Name { get; }
     public string MimeType { get; }
     public int Bytes { get; }
@@ -77,12 +78,14 @@ public class VFileAddPatch<TData> : IVFileValue<TData>
     public TData Data { get; }
 
     public VFileAddPatch(
+        string? path,
         string name,
         string mimeType,
         int bytes,
         string @ref,
         TData data)
     {
+        Path = path;
         Name = name;
         MimeType = mimeType;
         Bytes = bytes;
@@ -95,6 +98,7 @@ public class VFileSetPatch<TData>
     where TData : class, ICloneable
 {
     public string Id { get; }
+    public Optional<string>? Path { get; }
     public Optional<string>? Name { get; }
     public Optional<string>? MimeType { get; }
     public Optional<int>? Bytes { get; }
@@ -103,6 +107,7 @@ public class VFileSetPatch<TData>
 
     public VFileSetPatch(
         string id,
+        Optional<string>? path = null,
         Optional<string>? name = null,
         Optional<string>? mimeType = null,
         Optional<int>? bytes = null,
@@ -110,6 +115,7 @@ public class VFileSetPatch<TData>
         Optional<TData>? data = null)
     {
         Id = id;
+        Path = path;
         Name = name;
         MimeType = mimeType;
         Bytes = bytes;
