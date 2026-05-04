@@ -42,7 +42,7 @@ public class ClippoModelConfiguration<TMeta, TData>
                 row.HasKey(x => x.Id);
                 row.Property(x => x.Id).HasMaxLength(500).IsRequired();
                 row.Property(x => x.Type).IsRequired();
-                row.Property(x => x.Version).HasColumnName("Version").IsRequired().IsConcurrencyToken();
+                row.Property(x => x.Version).HasColumnName("Version").IsRequired().IsConcurrencyToken().HasMaxLength(100);
                 row.Property(x => x.Name).HasColumnName("Name").IsRequired(false).HasMaxLength(500);
                 row.Property(x => x.Bytes).HasColumnName("Bytes").IsRequired(false);
                 row.Property(x => x.Ref).HasColumnName("Ref").IsRequired(false).HasMaxLength(250);
@@ -52,8 +52,8 @@ public class ClippoModelConfiguration<TMeta, TData>
                     x => x.Folder,
                     vFolder =>
                     {
-                        vFolder.Property(x => x.Type).HasColumnName("Folder_Type");
-                        vFolder.Property(x => x.Id).HasColumnName("Folder_Id");
+                        vFolder.Property(x => x.Type).HasColumnName("Folder_Type").HasMaxLength(100);
+                        vFolder.Property(x => x.Id).HasColumnName("Folder_Id").HasMaxLength(250);
                     });
 
                 if (_dataOwnNavigationBuilder != null)
