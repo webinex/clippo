@@ -77,6 +77,7 @@ public class VFileAddPatch<TData> : IVFileValue<TData>
     public TData Data { get; }
 
     public VFileAddPatch(
+        string? path,
         string name,
         string mimeType,
         int bytes,

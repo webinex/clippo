@@ -11,6 +11,7 @@ internal class VRow<TMeta, TData>
     public VRowType Type { get; protected init; }
     public VFolderId Folder { get; protected set; } = null!;
     public string Version { get; protected set; } = null!;
+    public string? Path { get; protected set; }
     public string? Name { get; protected set; }
     public int? Bytes { get; protected set; }
     public string? Ref { get; protected set; }
@@ -30,6 +31,7 @@ internal class VRow<TMeta, TData>
         Type = value.Type;
         Folder = value.Folder.Clone();
         Version = value.Version;
+        Path = value.Path;
         Name = value.Name;
         Bytes = value.Bytes;
         Ref = value.Ref;
@@ -41,6 +43,7 @@ internal class VRow<TMeta, TData>
     public static VRow<TMeta, TData> NewFolder(
         string id,
         string type,
+        string? path,
         TMeta meta)
     {
         var vFolderId = new VFolderId(type, id);
@@ -48,6 +51,7 @@ internal class VRow<TMeta, TData>
         {
             Id = vFolderId.ToString(),
             Type = VRowType.Folder,
+            Path = path,
             Version = Guid.NewGuid().ToString(),
             Folder = vFolderId,
             Meta = (TMeta)meta.Clone(),
@@ -56,6 +60,7 @@ internal class VRow<TMeta, TData>
 
     public static VRow<TMeta, TData> NewFile(
         VFolderId vFolder,
+        string? path,
         string name,
         string mimeType,
         int bytes,
@@ -69,6 +74,7 @@ internal class VRow<TMeta, TData>
             Version = Guid.NewGuid().ToString(),
             Type = VRowType.File,
             Folder = vFolder.Clone(),
+            Path = path,
             Name = name,
             Bytes = bytes,
             MimeType = mimeType,
@@ -84,6 +90,11 @@ internal class VRow<TMeta, TData>
         {
             throw CodedException.Conflict();
         }
+    }
+
+    public void UpdatePath(string? path)
+    {
+        Path = path;
     }
 
     public void UpdateFile(string name, int bytes, string @ref, string mimeType, TData data)

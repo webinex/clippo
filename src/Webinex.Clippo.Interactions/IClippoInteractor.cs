@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Webinex.Clippo;
@@ -11,7 +12,7 @@ public interface IClippoInteractor<TMeta, TData>
     where TMeta : class, ICloneable
     where TData : class, ICloneable
 {
-    Task<VFolder<TMeta, TData>?> ByIdAsync(VFolderId id);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> GetAllAsync(VFolderQuery query);
     Task<VFolder<TMeta, TData>> SaveAsync(VFolderState<TData> state);
     Task<VFolder<TMeta, TData>> PatchAsync(VFolderPatch<TData> patch);
 }

@@ -20,6 +20,7 @@ export interface VFolder<TMeta, TData> {
   id: string;
   type: string;
   version: string;
+  path: string | null;
   files: VFile<TMeta, TData>[];
 }
 
@@ -73,6 +74,7 @@ export interface VFileState<TData> {
 export interface VFolderState<TData> {
   id: string;
   type: string;
+  path?: Optional<string> | null;
   version?: Optional<string> | null;
   files: VFileState<TData>[];
 }
@@ -86,11 +88,20 @@ export class ClippoHttp<TMeta, TData> {
     this._axios = axios;
   }
 
-  public byId = async (folderId: VFolderId): Promise<VFolder<TMeta, TData> | null> => {
-    const type = encodeURI(folderId.type);
-    const id = encodeURI(folderId.id);
-    const url = `/${type}/${id}`;
-    const { data } = await this._axios.get<VFolder<TMeta, TData>>(url);
+  public getAll = async (
+    folderId?: VFolderId | null,
+    folderPath?: string | null,
+  ): Promise<VFolder<TMeta, TData>[]> => {
+    const params = new URLSearchParams();
+    if (folderId != null) {
+      params.append('type', folderId.type);
+      params.append('id', folderId.id);
+    }
+    if (folderPath != null) params.append('path', folderPath);
+    const urlParams = params.toString();
+    const url = urlParams ? `/?${urlParams}` : '/';
+
+    const { data } = await this._axios.get<VFolder<TMeta, TData>[]>(url);
     return data;
   };
 

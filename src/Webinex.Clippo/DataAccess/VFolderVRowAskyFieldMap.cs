@@ -13,6 +13,7 @@ internal class VFolderVRowAskyFieldMap<TMeta, TData> : IAskyFieldMap<VRow<TMeta,
         "_id" => x => x.Id,
         "id" => x => x.Folder.Id,
         "type" => x => x.Folder.Type,
+        "path" => x => x.Path!,
         _ => null,
     };
 }

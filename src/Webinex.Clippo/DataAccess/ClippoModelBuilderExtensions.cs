@@ -44,6 +44,7 @@ public class ClippoModelConfiguration<TMeta, TData>
                 row.Property(x => x.Type).IsRequired();
                 row.Property(x => x.Version).HasColumnName("Version").IsRequired().IsConcurrencyToken().HasMaxLength(100).IsRequired();
                 row.Property(x => x.Name).HasColumnName("Name").IsRequired(false).HasMaxLength(500);
+                row.Property(x => x.Path).HasColumnName("Path").IsRequired(false).HasMaxLength(500);
                 row.Property(x => x.Bytes).HasColumnName("Bytes").IsRequired(false);
                 row.Property(x => x.Ref).HasColumnName("Ref").IsRequired(false).HasMaxLength(250);
                 row.Property(x => x.MimeType).HasColumnName("MimeType").IsRequired(false).HasMaxLength(250);
