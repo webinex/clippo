@@ -238,6 +238,22 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return await AddAsync(states, meta);
     }
 
+    public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<AddVFolderArgs<TMeta, TData>> args)
+    {
+        var defaultMeta = await _metaProvider.GetAsync();
+        var rows = args.SelectMany(x => x.ToRows(defaultMeta)).ToArray();
+        await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(rows);
+        return Map(rows);
+    }
+
+    public async Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddFilesAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args)
+    {
+        var defaultMeta = await _metaProvider.GetAsync();
+        var rows = args.Select(x => x.ToRow(folderId, defaultMeta)).ToArray();
+        await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(rows);
+        return rows.Select(MapFile).ToArray();
+    }
+
     private async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(
         IEnumerable<VFolderState<TData>> states,
         TMeta meta)
