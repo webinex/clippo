@@ -38,7 +38,7 @@ public class VRow<TMeta, TData>
         Data = (TData?)value.Data?.Clone();
     }
 
-    public static VRow<TMeta, TData> NewFolder(
+    internal static VRow<TMeta, TData> NewFolder(
         string id,
         string type,
         TMeta meta)
@@ -54,7 +54,7 @@ public class VRow<TMeta, TData>
         };
     }
 
-    public static VRow<TMeta, TData> NewFile(
+    internal static VRow<TMeta, TData> NewFile(
         VFolderId vFolder,
         string name,
         string mimeType,
@@ -78,7 +78,7 @@ public class VRow<TMeta, TData>
         };
     }
 
-    public void ValidateVersion(string version)
+    internal void ValidateVersion(string version)
     {
         if (Version != version)
         {
@@ -86,7 +86,7 @@ public class VRow<TMeta, TData>
         }
     }
 
-    public void UpdateFile(string name, int bytes, string @ref, string mimeType, TData data)
+    internal void UpdateFile(string name, int bytes, string @ref, string mimeType, TData data)
     {
         Name = name;
         Bytes = bytes;
@@ -96,7 +96,7 @@ public class VRow<TMeta, TData>
         Version = Guid.NewGuid().ToString();
     }
 
-    public void ApplyPatch(VFileSetPatch<TData> patch)
+    internal void ApplyPatch(VFileSetPatch<TData> patch)
     {
         if (patch.Name?.HasValue == true)
         {
@@ -126,7 +126,7 @@ public class VRow<TMeta, TData>
         Version = Guid.NewGuid().ToString();
     }
 
-    public VRow<TMeta, TData> Move(VFolderId id)
+    internal VRow<TMeta, TData> Move(VFolderId id)
     {
         if (Type == VRowType.Folder)
         {

@@ -17,7 +17,7 @@ public interface IClippo<TMeta, TData>
     Task<IReadOnlyCollection<VFile<TMeta, TData>>> PatchAsync(IEnumerable<VFilePatch<TData>> patches);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<VFolderState<TData>> states);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<AddVFolderArgs<TMeta, TData>> args);
-    Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddFilesAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args);
+    Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> UpdateAsync(IEnumerable<VFolderState<TData>> states);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> SaveAsync(IEnumerable<VFolderState<TData>> states);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> DeleteFoldersAsync(IEnumerable<VFolderId> ids);

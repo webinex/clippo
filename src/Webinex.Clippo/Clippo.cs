@@ -70,7 +70,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
         return RowsQueryable(new VFolderQuery(filterRule: filterRule), track);
     }
 
-    private VFolder<TMeta, TData>[] Map(VRow<TMeta, TData>[] rows)
+    private VFolder<TMeta, TData>[] Map(IEnumerable<VRow<TMeta, TData>> rows)
     {
         var byId = rows.GroupBy(x => x.Folder.Clone());
         return byId.Select(MapFolder).ToArray();
@@ -240,16 +240,36 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
 
     public async Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<AddVFolderArgs<TMeta, TData>> args)
     {
-        var defaultMeta = await _metaProvider.GetAsync();
-        var rows = args.SelectMany(x => x.ToRows(defaultMeta)).ToArray();
+        var lazyDefaultMeta = new Lazy<Task<TMeta>>(async () => await _metaProvider.GetAsync());
+        var rows = new List<VRow<TMeta, TData>>();
+
+        foreach (var arg in args)
+        {
+            var folderMeta = arg.Meta ?? await lazyDefaultMeta.Value;
+            var folderRow = VRow<TMeta, TData>.NewFolder(arg.Id, arg.Type, folderMeta);
+            rows.Add(folderRow);
+
+            foreach (var fileArg in arg.Files)
+            {
+                var meta = arg.Meta ?? await lazyDefaultMeta.Value;
+                rows.Add(fileArg.ToRow(arg.VFolderId(), meta));
+            }
+        }
+
         await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(rows);
         return Map(rows);
     }
 
-    public async Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddFilesAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args)
+    public async Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args)
     {
-        var defaultMeta = await _metaProvider.GetAsync();
-        var rows = args.Select(x => x.ToRow(folderId, defaultMeta)).ToArray();
+        var lazyDefaultMeta = new Lazy<Task<TMeta>>(async () => await _metaProvider.GetAsync());
+        var rows = new List<VRow<TMeta, TData>>();
+
+        foreach (var arg in args)
+        {
+            var meta = arg.Meta ?? await lazyDefaultMeta.Value;
+            rows.Add(arg.ToRow(folderId, meta));
+        }
         await _dbContext.Set<VRow<TMeta, TData>>().AddRangeAsync(rows);
         return rows.Select(MapFile).ToArray();
     }
