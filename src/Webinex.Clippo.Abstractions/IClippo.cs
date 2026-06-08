@@ -16,6 +16,8 @@ public interface IClippo<TMeta, TData>
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> PatchAsync(IEnumerable<VFolderPatch<TData>> patches);
     Task<IReadOnlyCollection<VFile<TMeta, TData>>> PatchAsync(IEnumerable<VFilePatch<TData>> patches);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<VFolderState<TData>> states);
+    Task<IReadOnlyCollection<VFolder<TMeta, TData>>> AddAsync(IEnumerable<AddVFolderArgs<TMeta, TData>> args);
+    Task<IReadOnlyCollection<VFile<TMeta, TData>>> AddAsync(VFolderId folderId, IEnumerable<AddVFileArgs<TMeta, TData>> args);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> UpdateAsync(IEnumerable<VFolderState<TData>> states);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> SaveAsync(IEnumerable<VFolderState<TData>> states);
     Task<IReadOnlyCollection<VFolder<TMeta, TData>>> DeleteFoldersAsync(IEnumerable<VFolderId> ids);
@@ -72,6 +74,16 @@ public static class ClippoExtensions
         where TData : class, ICloneable
     {
         var result = await clippo.AddAsync(new[] { state });
+        return result.First();
+    }
+
+    public static async Task<VFolder<TMeta, TData>> AddAsync<TMeta, TData>(
+        this IClippo<TMeta, TData> clippo,
+        AddVFolderArgs<TMeta, TData> arg)
+        where TMeta : class, ICloneable
+        where TData : class, ICloneable
+    {
+        var result = await clippo.AddAsync(new[] { arg });
         return result.First();
     }
 

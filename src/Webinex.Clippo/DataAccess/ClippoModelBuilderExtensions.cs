@@ -10,8 +10,9 @@ public class ClippoModelConfiguration<TMeta, TData>
 {
     private string _tableName = "Clippo_Rows";
     private string _schemaName = "dbo";
-    private Action<OwnedNavigationBuilder>? _dataOwnNavigationBuilder;
-    private Action<OwnedNavigationBuilder>? _metaOwnNavigationBuilder;
+    private Action<OwnedNavigationBuilder<VRow<TMeta, TData>, TData>>? _dataOwnNavigationBuilder;
+    private Action<OwnedNavigationBuilder<VRow<TMeta, TData>, TMeta>>? _metaOwnNavigationBuilder;
+    private Action<EntityTypeBuilder<VRow<TMeta, TData>>>? _postConfigure;
 
     public ClippoModelConfiguration<TMeta, TData> ToTable(string tableName, string schemaName = "dbo")
     {
@@ -20,15 +21,21 @@ public class ClippoModelConfiguration<TMeta, TData>
         return this;
     }
 
-    public ClippoModelConfiguration<TMeta, TData> OwnsData(Action<OwnedNavigationBuilder> own)
+    public ClippoModelConfiguration<TMeta, TData> OwnsData(Action<OwnedNavigationBuilder<VRow<TMeta, TData>, TData>> own)
     {
         _dataOwnNavigationBuilder = own;
         return this;
     }
 
-    public ClippoModelConfiguration<TMeta, TData> OwnsMeta(Action<OwnedNavigationBuilder> own)
+    public ClippoModelConfiguration<TMeta, TData> OwnsMeta(Action<OwnedNavigationBuilder<VRow<TMeta, TData>, TMeta>> own)
     {
         _metaOwnNavigationBuilder = own;
+        return this;
+    }
+
+    public ClippoModelConfiguration<TMeta, TData> PostConfigure(Action<EntityTypeBuilder<VRow<TMeta, TData>>> postConfigure)
+    {
+        _postConfigure = postConfigure;
         return this;
     }
 
@@ -85,6 +92,8 @@ public class ClippoModelConfiguration<TMeta, TData>
                 {
                     row.Ignore(x => x.Meta);
                 }
+
+                _postConfigure?.Invoke(row);
             });
     }
 }
