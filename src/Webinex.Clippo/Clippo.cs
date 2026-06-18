@@ -251,7 +251,7 @@ internal class Clippo<TMeta, TData> : IClippo<TMeta, TData>
 
             foreach (var fileArg in arg.Files)
             {
-                var meta = arg.Meta ?? await lazyDefaultMeta.Value;
+                var meta = fileArg.Meta ?? await lazyDefaultMeta.Value;
                 rows.Add(fileArg.ToRow(arg.VFolderId(), meta));
             }
         }
